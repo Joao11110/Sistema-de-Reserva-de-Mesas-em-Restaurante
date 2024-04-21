@@ -1,95 +1,97 @@
-package restaurante;
+package src.restaurante;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import src.db.Banco;
 
-public class Restaurante {
+public class Restaurante extends Usuario {
 
     private String endereco;
     private int anoAbertura;
-    private static ArrayList<Restaurante> restaurantes = new ArrayList<>();
+    private String cnpj;
     
-    public Restaurante(String endereco, int anoAbertura) {
+    public Restaurante(String nome, String senha, String endereco,String email, int anoAbertura, String cnpj) {
+        super(nome, senha,email);
         this.endereco = endereco;
         this.anoAbertura = anoAbertura;
+        this.cnpj = cnpj;
     }
     
-    public static void criarRestaurante() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\nDigite o endereço do restaurante: ");
-        String endereco = scanner.nextLine();
-        System.out.println("\nDigite o ano de abertura do restaurante: ");
-        int anoAbertura = scanner.nextInt();
-
-        Restaurante restaurante = new Restaurante(endereco, anoAbertura);
-        restaurantes.add(restaurante);
-
-        System.out.println("Restaurante criado com sucesso!");
+    public Restaurante(){
     }
     
-    public static void visualizarRestaurante(String endereco) {
-        for (Restaurante restaurante : restaurantes){
-            if (restaurante.getEndereco() == endereco){
-                System.out.println("Endereço: " + restaurante.getEndereco());
-                System.out.println("Ano de abertura: " + restaurante.getAnoAbertura());
-            }
-        }
-
-        System.out.println("\nRestaurante com endereço: " + endereco + "não foi encontrado!");
+    public void cadastrarRestaurante(Banco db) {
+        String query = String.format("INSERT INTO Restaurante (nome, endereco, senha, email, ano_abertura, cnpj) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", getNome(), getEndereco(), getSenha(), getEmail(), getAnoAbertura(),getCnpj());
+        db.queryUpdate(query);
     }
 
-    public static void atualizarRestaurante(String novoEndereco, int novoAnoAbertura) {
-        for(Restaurante restaurante : restaurantes) {
-            if(restaurante.getEndereco() == novoEndereco) {
-                restaurante.setEndereco(novoEndereco);
-                System.out.println("Endereço foi atualizado!");
-            }
-            else{
-                System.out.println("Endereço não existe.");
-            }
-            if(restaurante.getAnoAbertura() == novoAnoAbertura){
-                restaurante.setAnoAbertura(novoAnoAbertura);
-                System.out.println("O ano de abertura foi atualizado!");
-            }
-            else{
-                System.out.println("Ano é inválido.");
-            }
+    public void pesquisarRestaurante(Banco db, String cnpj) throws SQLException {
+        String query = String.format("SELECT * FROM Restaurante WHERE cnpj = '%s'", cnpj);
+        ResultSet rs = db.querySearch(query);
+        
+        setNome(rs.getString("nome"));
+        setEndereco(rs.getString("endereco"));
+        setSenha(rs.getString("senha"));
+        setEmail(rs.getString("email"));
+        setAnoAbertura(rs.getInt("ano_abertura"));
+        setCnpj(rs.getString("cnpj"));
+    }
+
+    public void listarRestaurantes(Banco db) throws SQLException {
+        String query = "SELECT * FROM Restaurante";
+        ResultSet rs = db.querySearch(query);
+
+        while (rs.next()) {
+            setNome(rs.getString("nome"));
+            setEndereco(rs.getString("endereco"));
+            setSenha(rs.getString("senha"));
+            setEmail(rs.getString("email"));
+            setAnoAbertura(rs.getInt("ano_abertura"));
+            setCnpj(rs.getString("cnpj"));
+            System.out.println(toString());
         }
     }
 
-    public void excluirRestaurante() {
-        restaurantes.remove(this);
-        System.out.println("Restaurante excluído com sucesso!");
+    public void editarRestaurante(Banco db) {
+        String query = String.format("UPDATE Restaurante SET nome = '%s', endereco = '%s', senha = '%s', email = '%s', ano_abertura = '%s' WHERE cnpj = '%s'", getNome(), getEndereco(), getSenha(), getEmail(), getAnoAbertura(), getCnpj());
+        db.queryUpdate(query);
     }
 
-    public static void listarRestaurantes() {
-        if (restaurantes.isEmpty()) {
-            System.out.println("Não há restaurantes cadastrados.");
-        } else {
-            System.out.println("-----------------------------");
-            System.out.println("Lista de restaurantes:\n");
-            System.out.println("-----------------------------");
-            for (Restaurante restaurante : restaurantes) {
-                System.out.println("Endereço: " + restaurante.endereco);
-                System.out.println("Ano de abertura: " + restaurante.anoAbertura);
-                System.out.println("-----------------------------");
-            }
-        }
+    public void removerRestaurante(Banco db) {
+        String query = String.format("DELETE FROM Restaurante WHERE cnpj = '%s'", getCnpj());
+        db.queryUpdate(query);
     }
 
     public String getEndereco() {
         return endereco;
     }
 
-    public int getAnoAbertura() {
-        return anoAbertura;
-    }
-
     public void setEndereco(String endereco) {
         this.endereco = endereco;
     }
 
+    public String getCnpj(){
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj){
+        this.cnpj = cnpj;
+    }
+
+    public int getAnoAbertura() {
+        return anoAbertura;
+    }
+
     public void setAnoAbertura(int anoAbertura) {
         this.anoAbertura = anoAbertura;
+    }
+
+    @Override
+    public String toString() {
+        return "Restaurante {nome=" + getNome() + ", endereco=" + getEndereco() + ", senha=" + getSenha() + ", email=" + getEmail() + ", anoAbertura=" + getAnoAbertura() + ",  Cnpj =" +  getCnpj() + "}";
+    }
+
+    @Override
+    void usuarioLogin(String login, String senha) {
     }
 }
