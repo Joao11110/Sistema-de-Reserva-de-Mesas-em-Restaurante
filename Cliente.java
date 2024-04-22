@@ -14,19 +14,19 @@ public class Cliente extends Usuario {
         this.cpf = cpf;
     }
 
-    public Cliente() {
+    public Cliente() { //Construtor auxiliar
     }
 
     public void cadastrarCliente(Banco db) {
-        String query = String.format("INSERT INTO Cliente (nome, email, senha, telefone, cpf) VALUES ('%s', '%s', '%s', '%s', '%s')", getNome(), getEmail(), getSenha(), getTelefone(), getCpf());
-        db.queryUpdate(query);
+        String query = String.format("INSERT INTO Cliente (nome, email, senha, telefone, cpf) VALUES ('%s', '%s', '%s', '%s', '%s')", getNome(), getEmail(), getSenha(), getTelefone(), getCpf()); //Insere um Get para cada coluna da tabela cliente
+        db.queryUpdate(query); //Realiza a atualização da tabela
     }
 
     public void pesquisarCliente(Banco db, String cpf) throws SQLException {
-        String query = String.format("SELECT * FROM Cliente WHERE cpf = '%s'", cpf);
-        ResultSet rs = db.querySearch(query);
-            
-        setNome(rs.getString("nome"));
+        String query = String.format("SELECT * FROM Cliente WHERE cpf = '%s'", cpf); //Pesquisa por um cliente no banco através do seu CPF
+        ResultSet rs = db.querySearch(query); //Recebe o resultado da pesquisa
+        
+        setNome(rs.getString("nome")); //Atualiza os dados e imprime
         setCpf(rs.getString("cpf"));
         setSenha(rs.getString("senha"));
         setEmail(rs.getString("email"));
@@ -34,11 +34,11 @@ public class Cliente extends Usuario {
     }
 
     public void listarClientes(Banco db) throws SQLException {
-        String query = "SELECT * FROM Cliente";
-        ResultSet rs = db.querySearch(query);
+        String query = "SELECT * FROM Cliente"; //Seleciona os dados da tabela cliente
+        ResultSet rs = db.querySearch(query); //Recebe e guarda os dados
         
-        while (rs.next()) {
-            setNome(rs.getString("nome"));
+        while (rs.next()) { //Avança para a próxima linha da lista
+            setNome(rs.getString("nome")); //Atualiza e imprime os valores
             setCpf(rs.getString("cpf"));
             setSenha(rs.getString("senha"));
             setEmail(rs.getString("email"));
@@ -48,15 +48,16 @@ public class Cliente extends Usuario {
     }
 
     public void editarCliente(Banco db) {
-        String query = String.format("UPDATE Cliente SET nome = '%s', email = '%s', senha = '%s', telefone = '%s' WHERE cpf = '%s'",getNome(),getEmail(),getSenha(),getTelefone(),getCpf());
-        db.queryUpdate(query);
+        String query = String.format("UPDATE Cliente SET nome = '%s', email = '%s', senha = '%s', telefone = '%s' WHERE cpf = '%s'",getNome(),getEmail(),getSenha(),getTelefone(),getCpf()); //Edita um cliente identificando atraves do CPF
+        db.queryUpdate(query); //Realiza a atualização na tabela
     }
 
     public void removerCliente(Banco db) {
         String query = String.format("DELETE FROM Cliente WHERE cpf = '%s'", getCpf());
-        db.queryUpdate(query);
+        db.queryUpdate(query); //Remove um cliente buscando pelo CPF na tabela
     }
-    
+
+    //Get e Set
     public String getTelefone() {
         return this.telefone;
     }
@@ -73,12 +74,9 @@ public class Cliente extends Usuario {
         this.cpf = cpf;
     }
     
+    //To String
     @Override
     public String toString() {
-        return "Cliente{nome=" + getNome() + ", senha=" + getSenha() + ", email=" + getEmail() + ", telefone=" + getTelefone() + ", cpf=" + getCpf() + "}";
-    }
-
-    @Override
-    void usuarioLogin(String login, String senha) {
+        return "Cliente{nome=" + getNome() + ", email=" + getEmail() + ", telefone=" + getTelefone() + ", cpf=" + getCpf() + "}";
     }
 }
