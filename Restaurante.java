@@ -17,19 +17,19 @@ public class Restaurante extends Usuario {
         this.cnpj = cnpj;
     }
     
-    public Restaurante(){
+    public Restaurante(){ //Construtor auxiliar do Main
     }
     
     public void cadastrarRestaurante(Banco db) {
-        String query = String.format("INSERT INTO Restaurante (nome, endereco, senha, email, ano_abertura, cnpj) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", getNome(), getEndereco(), getSenha(), getEmail(), getAnoAbertura(),getCnpj());
-        db.queryUpdate(query);
+        String query = String.format("INSERT INTO Restaurante (nome, endereco, senha, email, ano_abertura, cnpj) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", getNome(), getEndereco(), getSenha(), getEmail(), getAnoAbertura(),getCnpj()); //Cadastra um restaurante preenchendo os valores da coluna Restaurante pelo metodo Get
+        db.queryUpdate(query); //Atualiza no banco
     }
 
     public void pesquisarRestaurante(Banco db, String cnpj) throws SQLException {
-        String query = String.format("SELECT * FROM Restaurante WHERE cnpj = '%s'", cnpj);
-        ResultSet rs = db.querySearch(query);
+        String query = String.format("SELECT * FROM Restaurante WHERE cnpj = '%s'", cnpj); //Busca um restaurante pelo CNPJ
+        ResultSet rs = db.querySearch(query); //Recebe o resultado da pesquisa
         
-        setNome(rs.getString("nome"));
+        setNome(rs.getString("nome")); //Atualiza os valores e imprime
         setEndereco(rs.getString("endereco"));
         setSenha(rs.getString("senha"));
         setEmail(rs.getString("email"));
@@ -38,11 +38,11 @@ public class Restaurante extends Usuario {
     }
 
     public void listarRestaurantes(Banco db) throws SQLException {
-        String query = "SELECT * FROM Restaurante";
-        ResultSet rs = db.querySearch(query);
+        String query = "SELECT * FROM Restaurante"; //Seleciona todos os itens da tabela Restaurante
+        ResultSet rs = db.querySearch(query); //Recebe o resultado
 
-        while (rs.next()) {
-            setNome(rs.getString("nome"));
+        while (rs.next()) { //Próxima linha
+            setNome(rs.getString("nome")); //Atualiza e imprime
             setEndereco(rs.getString("endereco"));
             setSenha(rs.getString("senha"));
             setEmail(rs.getString("email"));
@@ -53,15 +53,16 @@ public class Restaurante extends Usuario {
     }
 
     public void editarRestaurante(Banco db) {
-        String query = String.format("UPDATE Restaurante SET nome = '%s', endereco = '%s', senha = '%s', email = '%s', ano_abertura = '%s' WHERE cnpj = '%s'", getNome(), getEndereco(), getSenha(), getEmail(), getAnoAbertura(), getCnpj());
-        db.queryUpdate(query);
+        String query = String.format("UPDATE Restaurante SET nome = '%s', endereco = '%s', senha = '%s', email = '%s', ano_abertura = '%s' WHERE cnpj = '%s'", getNome(), getEndereco(), getSenha(), getEmail(), getAnoAbertura(), getCnpj()); //Preenche os itens da tabela Restaurante com o metodo Get de cada atributo
+        db.queryUpdate(query); //Atualiza
     }
 
     public void removerRestaurante(Banco db) {
-        String query = String.format("DELETE FROM Restaurante WHERE cnpj = '%s'", getCnpj());
+        String query = String.format("DELETE FROM Restaurante WHERE cnpj = '%s'", getCnpj()); //Remove um restaurante encontrado na tabela atraves do seu CNPJ
         db.queryUpdate(query);
     }
 
+    //Metodos Get e Set
     public String getEndereco() {
         return endereco;
     }
@@ -86,12 +87,9 @@ public class Restaurante extends Usuario {
         this.anoAbertura = anoAbertura;
     }
 
+    //To String
     @Override
     public String toString() {
-        return "Restaurante {nome=" + getNome() + ", endereco=" + getEndereco() + ", senha=" + getSenha() + ", email=" + getEmail() + ", anoAbertura=" + getAnoAbertura() + ",  Cnpj =" +  getCnpj() + "}";
-    }
-
-    @Override
-    void usuarioLogin(String login, String senha) {
+        return "Restaurante {nome=" + getNome() + ", endereco=" + getEndereco() + ", email=" + getEmail() + ", anoAbertura=" + getAnoAbertura() + ", Cnpj=" +  getCnpj() + "}";
     }
 }
